@@ -2,88 +2,55 @@ Shellflow
 =========
 
 [![Build Status](https://travis-ci.org/informationsea/shellflow.svg?branch=master)](https://travis-ci.org/informationsea/shellflow)
+[![Documentation Status](https://readthedocs.org/projects/shellflow/badge/?version=latest)](https://shellflow.readthedocs.io/en/latest/?badge=latest)
 
 Shell Script like scientific workflow management system
 
-Flowscript
-----------
+# Licnese
 
-Flowscript is simple, expression-oriented and dynamic typing script language. This script is embedded to brace in shellflow.
+GPL version 3 or later
 
-### Supported types
+# Documents
 
-* string
-* int
-* file
-* array
-* map
-* function
+Available at [Read the docs](https://shellflow.readthedocs.io/en/latest/)
 
-### Flowscript syntax
+# Example
 
-* Number
-  * example: `1`, `100`
-  * Currently, negative number is not supported in flowscript 
-* Number Operations
-  * example: `1 + 2`, `2 - 3`, ` + 2`, `1 + 2`
+```bash
+#% GATK_VERSION = "4.0.10.1"
+#% BWA_VERSION = "0.7.17"
+#% SAMTOOLS_VERSION = "1.9"
 
-### Built-in functions
+# Generate simulation FASTQ
+python3 ((create-mutated-fasta.py)) ((e-coli-NC_011750.1.fasta)) --output [[e-coli-NC_011750.1-mutated-base.fasta]] --seed 123
+for i in 1 2; do
+    python3 ((create-mutated-fasta.py)) ((e-coli-NC_011750.1-mutated-base.fasta)) --output [[e-coli-NC_011750.1-mutated{{i}}.fasta]] --seed 123{{i}}
+    art_bin_MountRainier/art_illumina -ss HS25 -i ((e-coli-NC_011750.1-mutated{{i}}.fasta)) -p -l 150 -f 20 -m 200 -s 10 -o generated{{i}} # [[generated{{i}}1.fq]] [[generated{{i}}2.fq]]
+    for j in 1 2; do
+        sed -e 's/@/@{{i}}-/g' ((generated{{i}}{{j}}.fq))|gzip -c > [[generated{{i}}{{j}}-fix.fq.gz]]
+    done
+done
 
-* `basename(path[, suffix])`
-  * return base name of a path. if a suffix is provided and found in the path, this function removes the suffix.
-  * example: `basename("hoge/foo") => "foo"`
-  * example: `basename("hoge/foo.c", ".c") => "foo"`
-* `dirname(path)`
-  * return directory name of a path.
-  * example: `dirname("hoge/foo") => "hoge"`
-* `prefix(text, array)`
-  * add prefix to arrayed string
-  * example: `prefix("hoge", ["foo", "bar", "hoge"]) => ["hogefoo", "hogebar", "hogehoge"]`
-* `zip(array1, array2)`
-  * Zip two arrays and create an array of arrays.
-  * example: `zip([1,2,3], [4,5,6,7]) => [[1,4], [2,5], [3,6]]`
-* `file(path)`
-  * Convert to file type from string
+# Mapping
+for i in 1 2; do
+    bwa-{{BWA_VERSION}}/bwa mem -R "@RG\tID:ECOLI-SIM\tSM:ECOLI_SIM\tPL:illumina\tLB:ECOLI_SIM" e-coli-NC_011750.1.fasta ((generated{{i}}1-fix.fq.gz)) ((generated{{i}}2-fix.fq.gz))|samtools-{{SAMTOOLS_VERSION}}/samtools sort -o [[generated{{i}}.bam]] - # ((e-coli-NC_011750.1.fasta.bwt))
+    gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4G" MarkDuplicates -I ((generated{{i}}.bam)) -O [[generated{{i}}-markdup.bam]] -M [[generated{{i}}-markdup-metrics.txt]]
+    gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4G" BaseRecalibrator -I ((generated{{i}}-markdup.bam)) -O [[generated{{i}}-bqsr.txt]] -R ((e-coli-NC_011750.1.fasta)) --known-sites ((empty.vcf.gz)) # ((e-coli-NC_011750.1.dict))
+done
 
-Shellflow Syntax
-----------------
+gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4G" GatherBQSRReports -I ((generated1-bqsr.txt)) -I ((generated2-bqsr.txt)) -O [[generated-bqsr-merged.txt]]
 
-Almost all lines will be passed to shell directly. Before passing to shell, shellflow evaluates an embedded flowscript in a line and replace braces with the result of the flowscript.
+# Apply BQSR
+for i in 1 2; do
+    gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4G" ApplyBQSR -R ((e-coli-NC_011750.1.fasta)) -I ((generated{{i}}-markdup.bam)) -O [[generated{{i}}-recal.bam]] --bqsr-recal-file ((generated-bqsr-merged.txt)) # ((e-coli-NC_011750.1.dict))
+done
 
-### Input file annotation
+# Merge
 
-Input file name should be surrounded with `((` and `))`. Shell variables should not be contained in the brackets, but flowscript can be contained.
+samtools-{{SAMTOOLS_VERSION}}/samtools merge -f [[generated-merged.bam]] ((generated1-recal.bam)) ((generated2-recal.bam))
+samtools-{{SAMTOOLS_VERSION}}/samtools index ((generated-merged.bam)) # [[generated-merged.bam.bai]]
 
-### Output file annotation
-
-Output file name should be surrounded with `[[` and `]]`. Shell variables should not be contained in the brackets, but flowscript can be contained.
-
-### Embedded flowscript
-
-Embedded flowscript should be surrounded with `{{` and `}}`. Braces cannot be omitted even if only one variable specified.
-
-### `flowscript` statement
-
-A line that starts with `#%` will be parsed as raw flowscript expression.
-
-### `if` statement
-
-This statement is not implemented yet.
-
-### `for` statement
-
-This statement is not implemented yet.
-
-Configuration
--------------
-
-This feature is not implemented yet.
-
-Supported Backends
-------------------
-
-* Local Execution
-* Grid Engine variants (coming soon)
-
-Example
--------
+# Variant call
+gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4g" HaplotypeCaller -R ((e-coli-NC_011750.1.fasta)) -I ((generated-merged.bam)) -O [[generated-call.vcf.gz]] -ERC GVCF -bamout [[generated-merged-realigned.bam]] # ((e-coli-NC_011750.1.dict)) ((generated-merged.bam.bai))
+gatk-{{GATK_VERSION}}/gatk --java-options "-Xmx4g" GenotypeGVCFs -R ((e-coli-NC_011750.1.fasta)) -V ((generated-call.vcf.gz)) -O [[generated-call-result.vcf.gz]] # ((e-coli-NC_011750.1.dict))
+```
