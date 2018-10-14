@@ -1,5 +1,8 @@
 language: go
 
+before_script:
+- go build
+
 go:
   - "1.x"
   - "1.10.x"
