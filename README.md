@@ -1,6 +1,8 @@
 Shellflow
 =========
 
+[![Build Status](https://travis-ci.org/informationsea/shellflow.svg?branch=master)](https://travis-ci.org/informationsea/shellflow)
+
 Shell Script like scientific workflow management system
 
 Flowscript
