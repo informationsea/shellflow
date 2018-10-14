@@ -10,7 +10,6 @@ go:
 - 1.x
 - 1.10.x
 - master
-skip_cleanup: true
 matrix:
   allow_failures:
   - go: master
@@ -25,3 +24,5 @@ deploy:
     - shellflow_linux_arm64
   on:
     repo: informationsea/shellflow
+    tags: true
+  skip_cleanup: true
