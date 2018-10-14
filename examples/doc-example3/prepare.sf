@@ -1,0 +1,25 @@
+# -*- shell-script -*-
+
+#% GATK_VERSION = "4.0.10.1"
+#% BWA_VERSION = "0.7.17"
+#% SAMTOOLS_VERSION = "1.9"
+
+# Prepare analysis tools
+curl -o [[bwa-{{BWA_VERSION}}.tar.bz2]] -L https://downloads.sourceforge.net/project/bio-bwa/bwa-{{BWA_VERSION}}.tar.bz2
+tar xjf ((bwa-{{BWA_VERSION}}.tar.bz2)) # [[bwa-{{BWA_VERSION}}/bwa.c]]
+make -C bwa-{{BWA_VERSION}} # [[bwa-{{BWA_VERSION}}/bwa]] ((bwa-{{BWA_VERSION}}/bwa.c))
+
+curl -L -o [[samtools-{{SAMTOOLS_VERSION}}.tar.bz2]] https://github.com/samtools/samtools/releases/download/{{SAMTOOLS_VERSION}}/samtools-{{SAMTOOLS_VERSION}}.tar.bz2
+tar xjf ((samtools-{{SAMTOOLS_VERSION}}.tar.bz2)) # [[samtools-{{SAMTOOLS_VERSION}}/samtools.h]]
+make -C samtools-{{SAMTOOLS_VERSION}} # ((samtools-{{SAMTOOLS_VERSION}}/samtools.h)) [[samtools-{{SAMTOOLS_VERSION}}/samtools]]
+
+curl -o [[artbinmountrainier2016.06.05linux64.tgz]] -L https://www.niehs.nih.gov/research/resources/assets/docs/artbinmountrainier2016.06.05linux64.tgz
+tar xzf ((artbinmountrainier2016.06.05linux64.tgz)) # [[art_bin_MountRainier/art_illumina]]
+
+curl -o [[gatk-{{GATK_VERSION}}.zip]] -L https://github.com/broadinstitute/gatk/releases/download/{{GATK_VERSION}}/gatk-{{GATK_VERSION}}.zip
+unzip ((gatk-{{GATK_VERSION}}.zip)) # [[gatk-{{GATK_VERSION}}/gatk]]
+
+# Prepare index
+((samtools-{{SAMTOOLS_VERSION}}/samtools)) faidx ((e-coli-NC_011750.1.fasta)) # [[e-coli-NC_011750.1.fasta.fai]]
+((bwa-{{BWA_VERSION}}/bwa)) index ((e-coli-NC_011750.1.fasta)) # [[e-coli-NC_011750.1.fasta.bwt]]
+((gatk-{{GATK_VERSION}}/gatk)) --java-options "-Xmx4G" CreateSequenceDictionary -R ((e-coli-NC_011750.1.fasta)) # [[e-coli-NC_011750.1.dict]]

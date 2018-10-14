@@ -1,0 +1,4 @@
+bwa mem -R "@RG\tID:DRR002191\tSM:DRR002191\tPL:illumina\tLB:DRR002191" -t 6 hs37d5.fa <(bzip2 -dc ((DRR002191_1.fastq.bz2))) <(bzip2 -dc ((DRR002191_2.fastq.bz2))) > [[DRR002191.sam]]
+gatk SortSam -I ((DRR002191.sam)) -O [[DRR002191-sorted.bam]] --SORT_ORDER coordinate
+gatk MarkDuplicates -I ((DRR002191-sorted.bam)) -O [[DRR002191-markdup.bam]] -M [[DRR002191-markdup-metrics.txt]]
+gatk BaseRecalibrator --known-sites ((common_all_20180423.vcf.gz)) -I ((DRR002191-markdup.bam)) -O [[DRR002191-bqsr.txt]] -R hs37d5.fa 

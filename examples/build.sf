@@ -1,0 +1,8 @@
+#!/usr/bin/env shellflow
+
+#% compiler = "gcc"
+
+{{compiler}} -c ((hello.c)) # [[hello.o]] ((helloprint.h))
+{{compiler}} -c ((helloprint.c)) # [[helloprint.o]] ((helloprint.h))
+{{compiler}} -o [[hello]] ((helloprint.o)) ((hello.o))
+

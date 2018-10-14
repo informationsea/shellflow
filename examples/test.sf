@@ -1,0 +1,6 @@
+#!/usr/bin/env shellflow
+# -*- shell-script -*-
+
+date > [[{{date = "date-file"}}]]; sleep 10
+ls -lh > [[{{ls = "ls-result"}}]]; sleep 10
+cat (({{date}})) (({{ls}})) ((test.sf)) > [[{{result = "result"}}]]; sleep 10

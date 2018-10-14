@@ -1,0 +1,25 @@
+digraph shelltask {
+  node [shape=box];
+  task1 [label="cc -c -o lib1.o lib1.c # lib1.h"];
+  task2 [label="cc -c -o lib2.o lib2.c # lib2.h"];
+  task3 [label="cc -c -o main.o main.c # lib1.h lib2.h"];
+  task4 [label="cc -o program lib1.o lib2.o main.o"];
+  input0 [label="lib1.c", color=red];
+  input0 -> task1;
+  input1 [label="lib1.h", color=red];
+  input1 -> task1;
+  input1 -> task3;
+  input2 [label="lib2.c", color=red];
+  input2 -> task2;
+  input3 [label="lib2.h", color=red];
+  input3 -> task2;
+  input3 -> task3;
+  input4 [label="main.c", color=red];
+  input4 -> task3;
+  task1 -> task4 [label="lib1.o"];
+  task2 -> task4 [label="lib2.o"];
+  task3 -> task4 [label="main.o"];
+  output1 [label="program", color=blue];
+  task4 -> output1;
+}
+

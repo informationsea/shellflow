@@ -1,0 +1,12 @@
+site_name: Shellflow
+theme: readthedocs
+nav:
+- Shellflow: index.md
+- Commands: command.md
+- Getting Started: gettingstarted.md
+- Examples: examples.md
+- Syntax: syntax.md
+- Configuration: configuration.md
+- Flowscript: flowscript.md
+- Backup: backup.md
+- TODO: todo.md

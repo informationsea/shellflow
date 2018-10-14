@@ -1,0 +1,4 @@
+# -*- shell-script -*-
+
+mkdir -p hogehoge
+example_dont_inheirt_path

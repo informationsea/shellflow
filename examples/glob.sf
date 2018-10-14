@@ -1,0 +1,6 @@
+#!/usr/bin/env shellflow
+# -*- shell-script -*-
+
+#% compiler = "gcc"
+
+{{compiler}} -o [[hello]] ((*.c)) # ((*.h))

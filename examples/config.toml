@@ -1,0 +1,15 @@
+[backend]
+type = "local"
+
+[environment]
+
+
+[[command]]
+prefix = "gatk"
+memory = "20G"
+cpu = 4
+
+[[command]]
+prefix = "samtools "
+memory = "20G"
+cpu = 4

@@ -1,0 +1,4 @@
+#!/usr/bin/env shellflow run
+# -*- shell-script -*-
+
+java -version

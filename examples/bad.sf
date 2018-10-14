@@ -1,0 +1,6 @@
+#!/usr/bin/env shellflow
+# -*- shell-script -*-
+
+date > [[{{date = "date-file"}}]]; sleep 1
+ls -lh > [[{{ls = "ls-result"}}]]; sleep 1; touch notfound/hoge
+cat (({{date}})) (({{ls}})) ((test.sf)) > [[{{result = "result"}}]]; sleep 1

@@ -1,0 +1,7 @@
+#!/usr/bin/env shellflow
+# -*- shell-script -*-
+
+date > [[{{date = "date-file"}}]]
+ls -lh > [[{{ls = "ls-result"}}]]
+echo {{novar}}
+cat (({{date}})) (({{ls}})) ((test.sf)) > [[{{result = "result"}}]]

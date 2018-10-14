@@ -1,0 +1,9 @@
+#!/usr/bin/env shellflow
+# -*- shell-script -*-
+
+date > [[{{date = "date-file"}}]]
+ls -lh > [[{{ls = "ls-result"}}]]
+for i in 1 2 3; do
+    echo {{novar}}
+done
+cat (({{date}})) (({{ls}})) ((test.sf)) > [[{{result = "result"}}]]

@@ -1,0 +1,4 @@
+cc -v -c -o [[lib1.o]] ((lib1.c)) # ((lib1.h))
+cc -v -c -o [[lib2.o]] ((lib2.c)) # ((lib2.h))
+cc -v -c -o [[main.o]] ((main.c)) # ((lib1.h)) ((lib2.h))
+cc -v -o [[program]] ((lib1.o)) ((lib2.o)) ((main.o))

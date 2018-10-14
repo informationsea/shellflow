@@ -1,0 +1,11 @@
+digraph shelltask {
+  node [shape=box];
+  task1 [label="curl -o hs37d5.fa.gz -L ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz"];
+  task2 [label="gzip -dc hs37d5.fa.gz > hs37d5.fa"];
+  task3 [label="bwa index hs37d5.fa # hs37d5.fa.bwt"];
+  task1 -> task2 [label="hs37d5.fa.gz"];
+  task2 -> task3 [label="hs37d5.fa"];
+  output1 [label="hs37d5.fa.bwt", color=blue];
+  task3 -> output1;
+}
+
