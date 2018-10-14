@@ -47,7 +47,7 @@ func main() {
 }
 
 func helpMode(args []string) error {
-	_, err := fmt.Print(`shellflow: shell-script like workflow management system
+	_, err := fmt.Print(`shellflow @DEV@: shell-script like workflow management system
 
 Commands:
   run         Run workflow

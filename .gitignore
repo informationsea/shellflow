@@ -18,6 +18,11 @@
 cover.out
 cover.html
 shellflow
+shellflow_linux*
+shellflow_linux*
+shellflow_*bsd*
+shellflow_darwin*
+shellflow_windows*
 tmp/
 shellflow-wf/
 

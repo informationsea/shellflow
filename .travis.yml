@@ -2,8 +2,27 @@ language: go
 
 before_script:
 - go build
-
+- sed -i -e "s/@DEV@/$TRAVIS_TAG($TRAVIS_COMMIT)/" main.go
+before_install:
+  - go get github.com/mitchellh/gox
+before_deploy:
+- gox
 go:
   - "1.x"
   - "1.10.x"
   - master
+deploy:
+  provider: releases
+  api_key:
+    secure: "c1x7q9LmcWehfuZmiZkkZwGMTIhcUjxHP2ww5ZH7v4KVCPeNsWdcbXoFMSNZ0gZKy4LCO6xVR1Q5MaxzsZILaySfz1gloBRCSdCuAOcdqEAs8hXswUNSiinI2lzC/ak46a4RScw7FDSbgPWL5UDzWj9eWgUsZjmjo0+4kVOT83Yzq9d3w4diNsVZeiIcjkZxhNFQJyVapLCs0RsAy1xaF4WWmWHtCZwR+n9IQlWlRWS+811ZSraHcnurVYUEritdctEiMaxq1QKF2YZoEIprvUkdgYm6wSsvEPGHBwnu/ECy7W+1fsP1UxvRaRymLd5Tv5V5xYpcEvmwv5W80zH3h0rD0FvW6qMIpQuFRyDNu2z/nWUzECit+AwQhRO3PUA98MNpx2Bta8zNtcPW+f4t5OnVznAGfSOrzKcPPaA+gv1V2UCyiF6zTiIgIHalfRhMXQ25fNoWPPzm0AH33ah0WUVDvZO2a2JMLR996Yn90fJ/SrYF/+P6CF4VLL04Mf8Phn0jRBTwbvLvbEAIvn9ktrsOPor1Q9XnqDta31CNMcIy9SS+6RDDGVd5AN3KBe38OR5hcwzjG2uS26HFDWpYYsFc3h4Fa9B/XTa7yjIDfACH+KZHZV56PujnbhQ4/tmi0w27Bbe5auGoidyGZsA9t2rvkO5UUUl1lJEv4oFrPQY="
+  file:
+    - shellflow_linux_386
+    - shellflow_linux_amd64
+    - shellflow_linux_arm
+  on:
+    repo: informationsea/tableview
+    tags: true
+skip_cleanup: true
+matrix:
+  allow_failures:
+    - go: master
