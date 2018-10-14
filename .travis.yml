@@ -20,7 +20,7 @@ deploy:
     - shellflow_linux_amd64
     - shellflow_linux_arm
   on:
-    repo: informationsea/tableview
+    repo: informationsea/shellflow
     tags: true
 skip_cleanup: true
 matrix:
