@@ -1,28 +1,27 @@
 language: go
-
 before_script:
 - go build
 - sed -i -e "s/@DEV@/$TRAVIS_TAG($TRAVIS_COMMIT)/" main.go
 before_install:
-  - go get github.com/mitchellh/gox
+- go get github.com/mitchellh/gox
 before_deploy:
-- gox
+- gox --os linux --arch "386 arm arm64 amd64"
 go:
-  - "1.x"
-  - "1.10.x"
-  - master
+- 1.x
+- 1.10.x
+- master
+skip_cleanup: true
+matrix:
+  allow_failures:
+  - go: master
 deploy:
   provider: releases
   api_key:
-    secure: "c1x7q9LmcWehfuZmiZkkZwGMTIhcUjxHP2ww5ZH7v4KVCPeNsWdcbXoFMSNZ0gZKy4LCO6xVR1Q5MaxzsZILaySfz1gloBRCSdCuAOcdqEAs8hXswUNSiinI2lzC/ak46a4RScw7FDSbgPWL5UDzWj9eWgUsZjmjo0+4kVOT83Yzq9d3w4diNsVZeiIcjkZxhNFQJyVapLCs0RsAy1xaF4WWmWHtCZwR+n9IQlWlRWS+811ZSraHcnurVYUEritdctEiMaxq1QKF2YZoEIprvUkdgYm6wSsvEPGHBwnu/ECy7W+1fsP1UxvRaRymLd5Tv5V5xYpcEvmwv5W80zH3h0rD0FvW6qMIpQuFRyDNu2z/nWUzECit+AwQhRO3PUA98MNpx2Bta8zNtcPW+f4t5OnVznAGfSOrzKcPPaA+gv1V2UCyiF6zTiIgIHalfRhMXQ25fNoWPPzm0AH33ah0WUVDvZO2a2JMLR996Yn90fJ/SrYF/+P6CF4VLL04Mf8Phn0jRBTwbvLvbEAIvn9ktrsOPor1Q9XnqDta31CNMcIy9SS+6RDDGVd5AN3KBe38OR5hcwzjG2uS26HFDWpYYsFc3h4Fa9B/XTa7yjIDfACH+KZHZV56PujnbhQ4/tmi0w27Bbe5auGoidyGZsA9t2rvkO5UUUl1lJEv4oFrPQY="
+    secure: hyyNuEf4I91Fy/tt6sBVFLFwbYGrLdS1/MX91UU3eVVurCIiCC4xtAKXBYieImnjdwuMal5ApmC6QTafTmidNQ07cMjLyNqXj2iMAmLQ81RYLNVdSeSVf+tGTDjWx8Ag8vwnX/aSNZ35O38Ur99tPDmmvyQeU4Gtoth2o7uRs2l7+gYlCXnIokWeJHm9N9ENsRWt7WtYCMGRS7RS0bmcBLI9o54qjWIE++euRm61MndcMOMxXzWeAYqfF4dbhGbLH9IfrEVk9LW1YCxxpKzMN7aTn2Xy1JqxvU6PWJfAv9CF7G8DKCJl+ygJZyfY9MfGmn0SGdP26EM98Uh82Gcw/NLdzD9wH0cWvMvwtxQ0VgQIU1bkbBKsEmidFLJbCzCvHQj2gAJ+fDOODzXr8KSe2cALYg8GtdAa/JGNznu8c4CbPcBnykrhqBPK4AP1tLpt+DKrD3vYRcG4l9r191rq4qOWeSC5iCUOllcI4O0oR/sF5DIWfiZ9l9GjOA+7ffX8Hkk40F8HJH/QJa7fMZBqQpvyBwG5C243qI36hPSkE+69ggAoVfgxuyySvFL4TbZOdkWtY19Xs9hsd4MP67CnNz9773uNoMsT6PX5jxpVFum5hQADkdlGRgXVyVQtSoDLYmPt+HDaopqanHxRqpLo/pyW1G/xGFc42VkiKpB3zNg=
   file:
     - shellflow_linux_386
     - shellflow_linux_amd64
     - shellflow_linux_arm
+    - shellflow_linux_arm64
   on:
     repo: informationsea/shellflow
-    tags: true
-skip_cleanup: true
-matrix:
-  allow_failures:
-    - go: master
