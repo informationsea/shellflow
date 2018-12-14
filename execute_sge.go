@@ -95,7 +95,7 @@ func ExecuteInSge(ge *TaskScripts) error {
 			qsub = append(qsub, "-hold_jid", holdID.String())
 		}
 
-		qsub = append(qsub, "-N", jobNameBase+"__ID-"+strconv.Itoa(v.ID))
+		qsub = append(qsub, "-N", "sf-"+jobNameBase+"__ID-"+strconv.Itoa(v.ID))
 
 		if len(v.CommandConfiguration.SGEOption) > 0 {
 			qsub = append(qsub, v.CommandConfiguration.SGEOption...)

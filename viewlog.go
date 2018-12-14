@@ -419,7 +419,7 @@ func CollectLogsForOneWorkFromCache(logdirPath string) (*WorkflowLog, error) {
 			}
 
 		} else {
-			fmt.Fprintf(os.Stderr, "rescanning %s\n", job.JobLogRoot)
+			//fmt.Fprintf(os.Stderr, "rescanning %s\n", job.JobLogRoot)
 			newJob, err := CollectLogsForOneJob(job.JobLogRoot, job.ShellTask)
 			if err != nil {
 				return nil, err
